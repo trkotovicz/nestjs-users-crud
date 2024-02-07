@@ -12,39 +12,41 @@ import {
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdatePatchUserDTO } from './dto/update-patch-user.dto';
 import { UpdatePutUserDTO } from './dto/update-put-user.dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
+  constructor(private readonly userService: UserService) {}
   @Post()
-  async create(@Body() body: CreateUserDTO) {
-    return { ...body };
+  async create(@Body() data: CreateUserDTO) {
+    return await this.userService.create(data);
   }
 
   @Get()
   async list() {
-    return { users: [] };
+    return await this.userService.list();
   }
 
   @Get(':id')
   async readOne(@Param('id', ParseIntPipe) id) {
-    return { users: {}, id };
+    return await this.userService.readOne(id);
   }
 
   @Put(':id')
-  async update(@Body() body: UpdatePutUserDTO, @Param('id', ParseIntPipe) id) {
-    return { method: 'put', ...body, id };
+  async update(@Body() data: UpdatePutUserDTO, @Param('id', ParseIntPipe) id) {
+    return await this.userService.update(id, data);
   }
 
   @Patch(':id')
   async updatePartial(
-    @Body() body: UpdatePatchUserDTO,
+    @Body() data: UpdatePatchUserDTO,
     @Param('id', ParseIntPipe) id,
   ) {
-    return { method: 'patch', ...body, id };
+    return await this.userService.updatePartial(id, data);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id) {
-    return { id };
+    return await this.userService.delete(id);
   }
 }
