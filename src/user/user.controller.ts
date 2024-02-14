@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors,
+  // UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdatePatchUserDTO } from './dto/update-patch-user.dto';
