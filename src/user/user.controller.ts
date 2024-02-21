@@ -20,43 +20,38 @@ import { UserService } from './user.service';
 // import { LogInterceptor } from 'src/interceptors/log.interceptor';
 
 // @UseInterceptors(LogInterceptor) // para utilizar em todos os métodos do controller
+@Roles(Role.Admin)
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  // @UseInterceptors(LogInterceptor) para executar em um único método
 
-  @Roles(Role.Admin)
+  // @UseInterceptors(LogInterceptor) para executar em um único método
   @Post()
   async create(@Body() data: CreateUserDTO) {
     return await this.userService.create(data);
   }
 
-  @Roles(Role.Admin)
   @Get()
   async list() {
     return await this.userService.list();
   }
 
-  @Roles(Role.Admin)
   @Get(':id')
   async readOne(@ParamId() id: number) {
     return await this.userService.readOne(id);
   }
 
-  @Roles(Role.Admin)
   @Put(':id')
   async update(@Body() data: UpdatePutUserDTO, @ParamId() id: number) {
     return await this.userService.update(id, data);
   }
 
-  @Roles(Role.Admin)
   @Patch(':id')
   async updatePartial(@Body() data: UpdatePatchUserDTO, @ParamId() id: number) {
     return await this.userService.updatePartial(id, data);
   }
 
-  @Roles(Role.Admin)
   @Delete(':id')
   async delete(@ParamId() id: number) {
     return await this.userService.delete(id);
