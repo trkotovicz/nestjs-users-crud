@@ -5,7 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
 
@@ -15,9 +18,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly mailerService: MailerService,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
-  createToken(user: User) {
+  createToken(user: UserEntity) {
     return {
       accessToken: this.jwtService.sign(
         {
@@ -57,7 +62,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.userRepository.findOne({
       where: { email },
     });
 
@@ -73,9 +78,7 @@ export class AuthService {
   }
 
   async forget(email: string) {
-    const user = await this.prisma.user.findFirst({
-      where: { email },
-    });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
       throw new UnauthorizedException('Email inválido.');
@@ -116,12 +119,12 @@ export class AuthService {
       const salt = await bcrypt.genSalt();
       password = await bcrypt.hash(password, salt);
 
-      const user = await this.prisma.user.update({
-        where: { id: Number(data.id) },
-        data: { password },
+      await this.userRepository.update(Number(data.id), {
+        password,
       });
 
-      return this.createToken(user);
+      const result = await this.userService.readOne(Number(data.id));
+      return this.createToken(result);
     } catch (error) {
       throw new BadRequestException(error);
     }

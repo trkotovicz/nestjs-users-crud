@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
@@ -22,7 +22,7 @@ export class UserEntity {
   password: string;
 
   @Column({ type: 'date', nullable: true })
-  birthAt: string;
+  birthAt: Date;
 
   @CreateDateColumn()
   createdAt: string;
@@ -30,6 +30,6 @@ export class UserEntity {
   @UpdateDateColumn()
   updatedAt: string;
 
-  @Column({ enum: Role })
+  @Column({ default: Role.User })
   role: number;
 }
