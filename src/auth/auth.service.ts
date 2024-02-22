@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import {
   BadRequestException,
   Injectable,
@@ -16,6 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly mailerService: MailerService,
   ) {}
 
   createToken(user: User) {
@@ -82,20 +84,50 @@ export class AuthService {
       throw new UnauthorizedException('Email inválido.');
     }
 
-    // true pq vai enviar o email depois
+    const token = this.jwtService.sign(
+      {
+        id: user.id,
+      },
+      {
+        expiresIn: '30 minutes',
+        subject: String(user.id),
+        issuer: 'forget',
+        audience: 'users',
+      },
+    );
+
+    await this.mailerService.sendMail({
+      subject: 'Recuperação de Senha',
+      to: 'thais_kotovicz@hotmail.com',
+      template: 'forget',
+      context: {
+        name: user.name,
+        token: token,
+      },
+    });
+
     return true;
   }
 
   async reset(password: string, token: string) {
-    // validar o token
-    const id = 0;
+    try {
+      const data = this.jwtService.verify(token, {
+        issuer: 'forget',
+        audience: 'users',
+      });
 
-    const user = await this.prisma.user.update({
-      where: { id },
-      data: { password },
-    });
+      const salt = await bcrypt.genSalt();
+      password = await bcrypt.hash(password, salt);
 
-    return this.createToken(user);
+      const user = await this.prisma.user.update({
+        where: { id: Number(data.id) },
+        data: { password },
+      });
+
+      return this.createToken(user);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async register(data: AuthRegisterDTO) {
