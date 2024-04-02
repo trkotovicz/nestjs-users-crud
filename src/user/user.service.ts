@@ -71,8 +71,10 @@ export class UserService {
   async delete(id: number) {
     await this.exists(id);
     try {
-      const result = await this.userRepository.delete(id);
-      if (result.affected) return 'Usuário deletado com sucesso';
+      // const result = await this.userRepository.delete(id);
+      // if (result.affected) return 'Usuário deletado com sucesso';
+      await this.userRepository.delete(id);
+      return true;
     } catch (error) {
       throw new BadRequestException(error);
     }
