@@ -20,5 +20,5 @@ export const resetToken =
 export const authRegisterDTO: AuthRegisterDTO = {
   name: 'John Wick',
   email: 'john@email.com',
-  password: 'Senha!123',
+  password: 'Senh@123',
 };

@@ -17,9 +17,9 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import { join } from 'path';
-import { User } from 'src/decorators/user.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { UserService } from 'src/user/user.service';
+import { AuthGuard } from '../guards/auth.guard';
+import { UserService } from '../user/user.service';
+import { User } from '../decorators/user.decorator';
 import { FileService } from '../file/file.service';
 import { AuthService } from './auth.service';
 import { AuthForgetDTO } from './dto/auth-forget.dto';

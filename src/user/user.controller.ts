@@ -8,16 +8,16 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ParamId } from 'src/decorators/param-id.decorator';
-import { Roles } from 'src/decorators/role.decorator';
-import { Role } from 'src/enums/roles.enum';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { RoleGuard } from 'src/guards/role.guard';
+import { ParamId } from '../decorators/param-id.decorator';
+import { Roles } from '../decorators/role.decorator';
+import { Role } from '../enums/roles.enum';
+import { AuthGuard } from '../guards/auth.guard';
+import { RoleGuard } from '../guards/role.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdatePatchUserDTO } from './dto/update-patch-user.dto';
 import { UpdatePutUserDTO } from './dto/update-put-user.dto';
 import { UserService } from './user.service';
-// import { LogInterceptor } from 'src/interceptors/log.interceptor';
+// import { LogInterceptor } from '../interceptors/log.interceptor';
 
 // @UseInterceptors(LogInterceptor) // para utilizar em todos os métodos do controller
 @Roles(Role.Admin)
